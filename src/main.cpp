@@ -30,74 +30,39 @@ sllib ledCenterRed(pinLedCenterRed);
 sllib ledCenterGreen(pinLedCenterGreen);
 sllib ledCenterBlue(pinLedCenterBlue);
 sllib ledDown(pinLedDown);
-void updateAllLeds() {
-  ledUp.update();
-  ledCenterRed.update();
-  ledCenterGreen.update();
-  ledCenterBlue.update();
-  ledDown.update();
-}
+void updateAllLeds() {};
 
 enum HatchMode {AUTO, MANUAL, ERROR};
 HatchMode currentHatchMode = AUTO;
-bool hasModeChanged() {
-  static HatchMode previousHatchMode;
-  if (currentHatchMode != previousHatchMode) {
-    ledCenterRed.setOffSingle();
-    ledCenterGreen.setOffSingle();
-    ledCenterBlue.setOffSingle();
-    previousHatchMode = currentHatchMode;
-    return true;
-  }
-  return false;
-}
+bool hasModeChanged() {};
 enum HatchState {OPEN, OPENING, CLOSED, CLOSING, STOP, UNKNOWN};
 HatchState currentHatchState = STOP;
-bool hasStateChanged() {
-  static HatchState previousHatchState;
-  if (currentHatchState != previousHatchState) {
-    ledUp.setOffSingle();
-    ledDown.setOffSingle();
-    previousHatchState = currentHatchState;
-    return true;
-  }
-  return false;
-}
+bool hasStateChanged() {};
 
 int motorTurnCount;
 byte motorTurnCountTarget = 45;
 enum MotorControl {UP, DOWN, OFF};
-void setMotor(MotorControl control) {
-  switch (control) {
-  case UP:
-    digitalWrite(pinDirecA, HIGH);
-    digitalWrite(pinDirecB, LOW);
-    digitalWrite(pinEnable, HIGH);
-    break;
-  case DOWN:
-    digitalWrite(pinDirecA, LOW);
-    digitalWrite(pinDirecB, HIGH);
-    digitalWrite(pinEnable, HIGH);
-    break;
-  case OFF:
-    digitalWrite(pinDirecA, LOW);
-    digitalWrite(pinDirecB, LOW);
-    digitalWrite(pinEnable, LOW);
-    break;
-  }
-}
+void setMotor(MotorControl control) {};
 
 OneButton buttonUp(pinButtonUp, true, true);
 OneButton buttonMiddle(pinbuttonMiddle, true, true);
 OneButton buttonDown(pinButtonDown, true, true);
 OneButton rotaryEncoder(pinRotaryEncoder, true, true);
-void buttonsTick() {
-  rotaryEncoder.tick();
-  buttonUp.tick();
-  buttonMiddle.tick();
-  buttonDown.tick();
-}
-void initializeButtons() {
+void buttonsTick() {};
+
+unsigned int getLightSensorAverage() {};
+
+void setup() {
+  pinMode(pinEnable, OUTPUT);
+  pinMode(pinDirecA, OUTPUT);
+  pinMode(pinDirecB, OUTPUT);
+  pinMode(pinLightSensor, INPUT);
+  pinMode(pinEndSwitchUp, INPUT_PULLUP);
+  digitalWrite(pinEnable, LOW);
+  digitalWrite(pinDirecA, LOW);
+  digitalWrite(pinDirecB, LOW);
+
+  setMotor(OFF);
   Timer1.initialize(10000);
   Timer1.attachInterrupt(buttonsTick);
   buttonUp.attachClick([]() {
@@ -127,33 +92,6 @@ void initializeButtons() {
       motorTurnCount++;
     }
   });
-}
-
-unsigned int getLightSensorAverage() {
-  static unsigned int lightReadings[5];
-  for (int i = 0; i < 4; i++) {
-    lightReadings[i] = lightReadings[i + 1];
-  }
-  lightReadings[4] = analogRead(pinLightSensor);
-  for (int i = 0; i < 5; i++) {
-    lightSensorAverage += lightReadings[i];
-  }
-  lightSensorAverage = lightSensorAverage / 5;
-  return lightSensorAverage;
-}
-
-void setup() {
-  pinMode(pinEnable, OUTPUT);
-  pinMode(pinDirecA, OUTPUT);
-  pinMode(pinDirecB, OUTPUT);
-  pinMode(pinLightSensor, INPUT);
-  pinMode(pinEndSwitchUp, INPUT_PULLUP);
-  digitalWrite(pinEnable, LOW);
-  digitalWrite(pinDirecA, LOW);
-  digitalWrite(pinDirecB, LOW);
-
-  setMotor(OFF);
-  initializeButtons();
 
   for (byte i = 0; i < 5; i++) {
     getLightSensorAverage();
@@ -287,4 +225,74 @@ void loop() {
     currentHatchMode = ERROR;
     break;
   }
+}
+
+void updateAllLeds() {
+  ledUp.update();
+  ledCenterRed.update();
+  ledCenterGreen.update();
+  ledCenterBlue.update();
+  ledDown.update();
+}
+
+bool hasModeChanged() {
+  static HatchMode previousHatchMode;
+  if (currentHatchMode != previousHatchMode) {
+    ledCenterRed.setOffSingle();
+    ledCenterGreen.setOffSingle();
+    ledCenterBlue.setOffSingle();
+    previousHatchMode = currentHatchMode;
+    return true;
+  }
+  return false;
+}
+bool hasStateChanged() {
+  static HatchState previousHatchState;
+  if (currentHatchState != previousHatchState) {
+    ledUp.setOffSingle();
+    ledDown.setOffSingle();
+    previousHatchState = currentHatchState;
+    return true;
+  }
+  return false;
+}
+
+void setMotor(MotorControl control) {
+  switch (control) {
+  case UP:
+    digitalWrite(pinDirecA, HIGH);
+    digitalWrite(pinDirecB, LOW);
+    digitalWrite(pinEnable, HIGH);
+    break;
+  case DOWN:
+    digitalWrite(pinDirecA, LOW);
+    digitalWrite(pinDirecB, HIGH);
+    digitalWrite(pinEnable, HIGH);
+    break;
+  case OFF:
+    digitalWrite(pinDirecA, LOW);
+    digitalWrite(pinDirecB, LOW);
+    digitalWrite(pinEnable, LOW);
+    break;
+  }
+}
+
+void buttonsTick() {
+  rotaryEncoder.tick();
+  buttonUp.tick();
+  buttonMiddle.tick();
+  buttonDown.tick();
+}
+
+unsigned int getLightSensorAverage() {
+  static unsigned int lightReadings[5];
+  for (int i = 0; i < 4; i++) {
+    lightReadings[i] = lightReadings[i + 1];
+  }
+  lightReadings[4] = analogRead(pinLightSensor);
+  for (int i = 0; i < 5; i++) {
+    lightSensorAverage += lightReadings[i];
+  }
+  lightSensorAverage = lightSensorAverage / 5;
+  return lightSensorAverage;
 }
