@@ -2,7 +2,9 @@
 An Arduino Nano powered chicken coop door
 
 ## How it works
-WIP
+The hatch automatically opens at dawn and closes at sunset when the light sensor reaches a certain threshold.\
+Using the buttons it can also be operated manually.
+The LEDs signals the state of the hatch, closing, opening, or if an error has occured.
 
 ## Technical details
 ### Schematic
