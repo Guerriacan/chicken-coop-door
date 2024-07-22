@@ -6,7 +6,7 @@ WIP
 
 ## Technical details
 ### Schematic
-WIP
+![Schematic](schematic.png?raw=true)
 
 ### Librairies used
 - [OneButton](https://github.com/mathertel/OneButton)
