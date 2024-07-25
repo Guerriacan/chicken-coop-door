@@ -30,27 +30,27 @@ sllib ledCenterRed(pinLedCenterRed);
 sllib ledCenterGreen(pinLedCenterGreen);
 sllib ledCenterBlue(pinLedCenterBlue);
 sllib ledDown(pinLedDown);
-void updateAllLeds() {};
+void updateAllLeds();
 
 enum HatchMode {AUTO, MANUAL, ERROR};
 HatchMode currentHatchMode = AUTO;
-bool hasModeChanged() {};
+bool hasModeChanged();
 enum HatchState {OPEN, OPENING, CLOSED, CLOSING, STOP, UNKNOWN};
 HatchState currentHatchState = STOP;
-bool hasStateChanged() {};
+bool hasStateChanged();
 
 int motorTurnCount;
 byte motorTurnCountTarget = 45;
 enum MotorControl {UP, DOWN, OFF};
-void setMotor(MotorControl control) {};
+void setMotor(MotorControl control);
 
 OneButton buttonUp(pinButtonUp, true, true);
 OneButton buttonMiddle(pinbuttonMiddle, true, true);
 OneButton buttonDown(pinButtonDown, true, true);
 OneButton rotaryEncoder(pinRotaryEncoder, true, true);
-void buttonsTick() {};
+void buttonsTick();
 
-unsigned int getLightSensorAverage() {};
+unsigned int getLightSensorAverage();
 
 void setup() {
   pinMode(pinEnable, OUTPUT);
